@@ -12,32 +12,49 @@ public class Test : MonoBehaviour {
 		tapInputAndroid = TapInputAndroid.Instance;
 		tapInputAndroid.EnableDebug ();
 
+		tapInputAndroid.OnBluetoothTurnedOn += OnBluetoothTurnedOn;
+		tapInputAndroid.OnBluetoothTurnedOff += OnBluetoothTurnedOff;
 		tapInputAndroid.OnDeviceConnected += OnDeviceConnected;
 		tapInputAndroid.OnDeviceDisconnected += OnDeviceDisconnected;
-		tapInputAndroid.OnNotificationReceived += OnNotificationReceived;
-
-		tapInputAndroid.EstablishConnections ();
+		tapInputAndroid.OnNameRead += OnNameRead;
+		tapInputAndroid.OnControllerModeStarted += OnControllerModeStarted;
+		tapInputAndroid.OnTextModeStarted += OnTextModeStarted;
+		tapInputAndroid.OnTapInputReceived += OnTapInputReceived;
 	}
 
-	private void OnDeviceConnected(string macAddress)
-	{
-		Debug.Log ("Test OnDeviceConnected " + macAddress);
-
-		tapInputAndroid.Subscribe (macAddress);
+	private void OnBluetoothTurnedOn() {
+		Debug.Log ("Test OnBluetoothTurnedOn");
 	}
 
-	private void OnDeviceDisconnected(string macAddress)
-	{
-		Debug.Log ("Test OnDeviceDisconnected " + macAddress);
+	private void OnBluetoothTurnedOff() {
+		Debug.Log ("Test OnBluetoothTurnedOff");
 	}
 
-	private void OnNotificationSubscribed(string macAddress)
+	private void OnDeviceConnected(string tapIdentifier)
 	{
-		Debug.Log ("Test OnNotificationSubscribed " + macAddress);
+		Debug.Log ("Test OnDeviceConnected " + tapIdentifier);
+		tapInputAndroid.StartControllerMode (tapIdentifier);
 	}
 
-	private void OnNotificationReceived(int data)
+	private void OnDeviceDisconnected(string tapIdentifier)
 	{
-		Debug.Log ("Test OnNotificationReceived " + data);
+		Debug.Log ("Test OnDeviceDisconnected " + tapIdentifier);
+	}
+
+	private void OnNameRead(string tapIdentifier, string name) {
+		Debug.Log ("Test OnNameRead " + tapIdentifier + " " + name);
+	}
+
+	private void OnControllerModeStarted(string tapIdentifier) {
+		Debug.Log ("Test OnControllerModeStarted " + tapIdentifier);
+	}
+
+	private void OnTextModeStarted(string tapIdentifier) {
+		Debug.Log ("Test OnTextModeStarted " + tapIdentifier);
+	}
+
+	private void OnTapInputReceived(int data)
+	{
+		Debug.Log ("Test OnTapInputReceived " + data);
 	}
 }

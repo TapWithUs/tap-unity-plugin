@@ -57,7 +57,7 @@ public class TapInputManager : MonoBehaviour {
 //		TapInputAndroid.Instance.EnableDebug ();
 		TapInputAndroid.Instance.OnDeviceConnected += OnDeviceConnected;
 		TapInputAndroid.Instance.OnDeviceDisconnected += OnDeviceDisconnected;
-		TapInputAndroid.Instance.OnNotificationReceived += OnNotificationReceived;
+		TapInputAndroid.Instance.OnTapInputReceived += OnNotificationReceived;
 
 #endif
 
@@ -76,7 +76,6 @@ public class TapInputManager : MonoBehaviour {
 	private void OnDeviceConnected(string macAddress)
 	{
 		Debug.Log ("Test OnDeviceConnected " + macAddress);
-		TapInputAndroid.Instance.Subscribe (macAddress);
 	}
 	
 	private void OnDeviceDisconnected(string macAddress)

@@ -5,122 +5,139 @@ using System;
 
 public class TapInputAndroid : MonoBehaviour {
 
-	/// <summary>
-	/// Will be called when a TAP device is connected.
-	/// </summary>
+	private const string GAME_OBJECT_NAME = "TapInputAndroid";
+	private const Char ARGS_SEPERATOR = '|';
+
+	public event Action OnBluetoothTurnedOn;
+	public event Action OnBluetoothTurnedOff;
 	public event Action<string> OnDeviceConnected;
-
-	/// <summary>
-	/// Will be called when a TAP device is disconnected.
-	/// </summary>
 	public event Action<string> OnDeviceDisconnected;
-
-	/// <summary>
-	/// Will be called when a notification is successfully subscribed.
-	/// </summary>
-//	public event Action<string> OnNotificationSubscribed;
-
-	/// <summary>
-	/// Will be called when a notification is received.
-	/// </summary>
-	public event Action<int> OnNotificationReceived;
+	public event Action<string, string> OnNameRead;
+	public event Action<string> OnControllerModeStarted;
+	public event Action<string> OnTextModeStarted;
+	public event Action<int> OnTapInputReceived;
 
 	private static TapInputAndroid instance;
 	public static TapInputAndroid Instance { get { return instance; } }
 
-	private AndroidJavaObject tapBluetoothUnityAdapter;
+	private AndroidJavaObject tapUnityAdapter;
 
 	private void Awake()
 	{
+		Debug.LogError ("Awake");
 		if (instance != null && instance != this) {
 			Destroy (this.gameObject);
 		} else {
 			instance = this;
 		}
-	}
 
-	private void Start()
-	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
 		AndroidJavaClass unityPlayer = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
 		AndroidJavaObject currentActivity = unityPlayer.GetStatic <AndroidJavaObject>("currentActivity"); 
 		AndroidJavaObject context = currentActivity.Call<AndroidJavaObject>("getApplicationContext");
 
-		tapBluetoothUnityAdapter = new AndroidJavaObject("tapwithus.com.tapunity.TapUnityAdapter", context);
+		tapUnityAdapter = new AndroidJavaObject("com.tapwithus.tapunity.TapUnityAdapter", context);
 		EnableDebug ();
+		#endif
+	}
+
+	private void OnApplicationPause(bool isPaused) {
+		Debug.LogError ("OnApplicationPause " + isPaused);
+		#if UNITY_ANDROID && !UNITY_EDITOR
+		if (isPaused) {
+			tapUnityAdapter.Call ("pause");
+		} else {
+			tapUnityAdapter.Call ("resume");
+		}
 		#endif
 	}
 
 	private void OnDestroy()
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		tapBluetoothUnityAdapter.Call ("onDestroy");
+		tapUnityAdapter.Call ("destroy");
 		#endif
 	}
 
 	public void EnableDebug()
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		tapBluetoothUnityAdapter.Call ("enableDebug");
+		tapUnityAdapter.Call ("enableDebug");
 		#endif
 	}
 
 	public void DisableDebug()
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		tapBluetoothUnityAdapter.Call ("disableDebug");
+		tapUnityAdapter.Call ("disableDebug");
 		#endif
 	}
 
-	/// <summary>
-	/// Establishes the connections with TAP devices.
-	/// </summary>
-	public void EstablishConnections()
+	public void StartControllerMode(string tapIdentifier)
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		tapBluetoothUnityAdapter.Call ("establishConnections");
+		tapUnityAdapter.Call ("startControllerMode", tapIdentifier);
 		#endif
 	}
 
-	/// <summary>
-	/// Subscribes for TAP data notification for the specified TAP device.
-	/// </summary>
-	/// <param name="macAddress">Mac address.</param>
-	public void Subscribe(string macAddress)
+	public void StartTextMode(string tapIdentifier)
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		tapBluetoothUnityAdapter.Call ("subscribe", macAddress);
+		tapUnityAdapter.Call ("startTextMode", tapIdentifier);
 		#endif
 	}
 
-	private void onDeviceConnected(string macAddress)
+	private void onBluetoothTurnedOn() {
+		if (OnBluetoothTurnedOn != null) {
+			OnBluetoothTurnedOn ();
+		}
+	}
+
+	private void onBluetoothTurnedOff() {
+		if (OnBluetoothTurnedOff != null) {
+			OnBluetoothTurnedOff ();
+		}
+	}
+
+	private void onDeviceConnected(string tapIdentifier)
 	{
 		if (OnDeviceConnected != null) {
-			OnDeviceConnected (macAddress);
+			OnDeviceConnected (tapIdentifier);
 		}
 	}
 
-	private void onDeviceDisconnected(string macAddress)
+	private void onDeviceDisconnected(string tapIdentifier)
 	{
 		if (OnDeviceDisconnected != null) {
-			OnDeviceDisconnected (macAddress);
+			OnDeviceDisconnected (tapIdentifier);
 		}
 	}
 
-//	private void onNotificationSubscribed(string macAddress)
-//	{
-//		if (OnNotificationSubscribed != null) {
-//			OnNotificationSubscribed (macAddress);
-//		}
-//	}
+	private void onNameRead(string args) {
+		if (OnBluetoothTurnedOff != null) {
+			string[] argParts = args.Split (ARGS_SEPERATOR);
+			OnNameRead (argParts [0], argParts [1]);
+		}
+	}
 
-	private void onNotificationReceived(string data)
+	private void onControllerModeStarted(string tapIdentifier) {
+		if (OnControllerModeStarted != null) {
+			OnControllerModeStarted (tapIdentifier);
+		}
+	}
+
+	private void onTextModeStarted(string tapIdentifier) {
+		if (OnTextModeStarted != null) {
+			OnTextModeStarted (tapIdentifier);
+		}
+	}
+
+	private void onTapInputReceived(string data)
 	{
-		int d = 0;
-		Int32.TryParse (data, out d);
-
-		if (OnNotificationReceived != null) {
-			OnNotificationReceived (d);
+		if (OnTapInputReceived != null) {
+			int d = 0;
+			Int32.TryParse (data, out d);
+			OnTapInputReceived (d);
 		}
 	}
 }
