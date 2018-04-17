@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEditor;
+#if UNITY_IOS 
 using UnityEditor.iOS.Xcode;
 using UnityEditor.iOS.Xcode.Extensions;
+#endif
 using UnityEditor.Callbacks;
 using System.Collections;
 

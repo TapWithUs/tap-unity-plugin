@@ -5,6 +5,9 @@ using System;
 
 public class TapInputAndroid : MonoBehaviour {
 
+	public const int MODE_TEXT = 1;
+	public const int MODE_CONTROLLER = 2;
+
 	private const string GAME_OBJECT_NAME = "TapInputAndroid";
 	private const Char ARGS_SEPERATOR = '|';
 
@@ -16,6 +19,8 @@ public class TapInputAndroid : MonoBehaviour {
 	public event Action<string> OnControllerModeStarted;
 	public event Action<string> OnTextModeStarted;
 	public event Action<string, int> OnTapInputReceived;
+	public event Action<string[]> OnConnectedTapsReceived;
+	public event Action<string, int> OnModeReceived;
 
 	private static TapInputAndroid instance;
 	public static TapInputAndroid Instance { get { return instance; } }
@@ -37,6 +42,7 @@ public class TapInputAndroid : MonoBehaviour {
 		AndroidJavaObject context = currentActivity.Call<AndroidJavaObject>("getApplicationContext");
 
 		tapUnityAdapter = new AndroidJavaObject("com.tapwithus.tapunity.TapUnityAdapter", context);
+		tapUnityAdapter.Call ("resume");
 		EnableDebug ();
 		#endif
 	}
@@ -99,16 +105,12 @@ public class TapInputAndroid : MonoBehaviour {
 		}
 	}
 
-	private void onDeviceConnected(string tapIdentifier)
+	private void onTapConnected(string tapIdentifier)
 	{
-		tapUnityAdapter.Call("readName", tapIdentifier);
-		
-//		if (OnDeviceConnected != null) {
-//			OnDeviceConnected (tapIdentifier);
-//		}
+		tapUnityAdapter.Call ("readName", tapIdentifier);
 	}
 
-	private void onDeviceDisconnected(string tapIdentifier)
+	private void onTapDisconnected(string tapIdentifier)
 	{
 		if (OnDeviceDisconnected != null) {
 			OnDeviceDisconnected (tapIdentifier);
@@ -134,14 +136,33 @@ public class TapInputAndroid : MonoBehaviour {
 		}
 	}
 
-	private void onTapInputReceived(string data)
+	private void onTapInputReceived(string args)
 	{
 		if (OnTapInputReceived != null) {
-			string[] argParts = data.Split (ARGS_SEPERATOR);
+			string[] argParts = args.Split (ARGS_SEPERATOR);
 
 			int d = 0;
 			Int32.TryParse (argParts[1], out d);
 			OnTapInputReceived (argParts[0], d);
+		}
+	}
+
+	private void onConnectedTapsReceived(String tapsArg)
+	{
+		if (OnConnectedTapsReceived != null) {
+			string[] taps = tapsArg.Split (ARGS_SEPERATOR);
+
+			OnConnectedTapsReceived (taps);
+		}
+	}
+
+	private void onModeReceived(String modeArg)
+	{
+		if (OnModeReceived != null) {
+			string[] argParts = modeArg.Split (ARGS_SEPERATOR);
+			int mode = 0;
+			Int32.TryParse (argParts[1], out mode);
+			OnTapInputReceived (argParts[0], mode);
 		}
 	}
 }
