@@ -75,6 +75,7 @@ public class TapInputManager : MonoBehaviour {
 	}
 
 	private static void onTapConnected(string identifier, string name) {
+		Debug.Log ("TAP connected - " + identifier + " " + name);
 		if (OnTapConnected != null) {
 			OnTapConnected (identifier, name);
 		}
