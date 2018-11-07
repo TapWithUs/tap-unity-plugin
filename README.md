@@ -50,8 +50,8 @@ This function will tell you which TAP was being tapped (identifier:String), and 
 Combination is an integer, between 1 and 31.
 It's binary form represents the fingers that are tapped.
 The LSB is thumb finger, the MSB (bit number 5) is the pinky finger.
-For example: if combination equls 3 - it's binary form is 00101,
-Which means that the thumb and the middle fingers are tapped.
+For example: if combination equals 3 - it's binary form is 00101,
+Which means that the thumb and the middle fingers were tapped.
 For your convenience, you can convert the binary format into fingers boolean array (explanation follows)
 
 ## Subscribe to these events
@@ -63,7 +63,7 @@ TapInputManager.OnBluetoothTurnedOn += onBluetoothOn;
 TapInputManager.OnBluetoothTurnedOff += onBluetoothOff;
 TapInputManager.OnTapConnected += onTapConnected;
 TapInputManager.OnTapDisconnected += onTapDisconnected;
-// ... some cool code
+// ... some more cool code
 
 void onTapped(string identifier, int combination) {
 // ... some awsome code
