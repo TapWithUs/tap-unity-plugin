@@ -107,7 +107,7 @@ public class TapInputAndroid : MonoBehaviour {
 
 	private void onTapConnected(string tapIdentifier)
 	{
-		tapUnityAdapter.Call ("readName", tapIdentifier);
+		tapUnityAdapter.Call ("getCachedTap", tapIdentifier);
 	}
 
 	private void onTapDisconnected(string tapIdentifier)
@@ -117,20 +117,23 @@ public class TapInputAndroid : MonoBehaviour {
 		}
 	}
 
-	private void onNameRead(string args) {
+	private void onCachedTapRetrieved(string args)
+	{
 		if (OnDeviceConnected != null) {
 			string[] argParts = args.Split (ARGS_SEPERATOR);
 			OnDeviceConnected (argParts [0], argParts [1]);
 		}
 	}
 
-	private void onControllerModeStarted(string tapIdentifier) {
+	private void onControllerModeStarted(string tapIdentifier)
+	{
 		if (OnControllerModeStarted != null) {
 			OnControllerModeStarted (tapIdentifier);
 		}
 	}
 
-	private void onTextModeStarted(string tapIdentifier) {
+	private void onTextModeStarted(string tapIdentifier) 
+	{
 		if (OnTextModeStarted != null) {
 			OnTextModeStarted (tapIdentifier);
 		}
@@ -162,7 +165,7 @@ public class TapInputAndroid : MonoBehaviour {
 			string[] argParts = modeArg.Split (ARGS_SEPERATOR);
 			int mode = 0;
 			Int32.TryParse (argParts[1], out mode);
-			OnTapInputReceived (argParts[0], mode);
+			OnModeReceived (argParts[0], mode);
 		}
 	}
 }
