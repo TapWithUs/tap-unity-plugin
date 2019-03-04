@@ -25,15 +25,17 @@ public static Action<string> OnTapDisconnected;
 
 ### OnBluetoothTurnedOn
 
-Called whenever bluetooth state is turned on. pretty straight-forward...
+Called whenever bluetooth state is turned on. pretty straight-forward... 
+* Doesn't work on Windows Platform.
 
 ### OnBluetoothTurnedOff
 
 Called whenver bouetooth state is turned off... You can use this function to alert the user for example.
+* Doesn't work on Windows Platform.
 
-### OnTapConnected(string identifier, string name)
+### OnTapConnected(string identifier, string name. int fw)
 
-Called when a TAP device is connected to the mobile device, sending the TAP identifier and it's display name.
+Called when a TAP device is connected to the mobile device, sending the TAP identifier, it's display name and the firmware version of the TAP.
 Each TAP device has an identifier (a unique string) to allow you to keep track of all the taps that are connected
 (if for example you're developing a multiplayer game, you need to keep track of the players).
 This identifier is used in the rest of the events actions.
@@ -43,33 +45,40 @@ This identifier is used in the rest of the events actions.
 
 Called when a TAP device is disconnected , sending the TAP identifier.
 
-### OnTapped(string identifier, int combination)
+### OnTapInputReceived(string identifier, int combination)
 
 This is where magic will happen.
 This function will tell you which TAP was being tapped (identifier:String), and which fingers are tapped (combination:UInt8)
 Combination is an integer, between 1 and 31.
 It's binary form represents the fingers that are tapped.
 The LSB is thumb finger, the MSB (bit number 5) is the pinky finger.
-For example: if combination equals 3 - it's binary form is 00101,
-Which means that the thumb and the middle fingers were tapped.
+For example: if combination equls 3 - it's binary form is 00101,
+Which means that the thumb and the middle fingers are tapped.
 For your convenience, you can convert the binary format into fingers boolean array (explanation follows)
+
+### OnMouseInputReceived(string identifier, int vx, int vy, bool isMouse)
+
+This event describe the mouse movement of a TAP.
+vx,vy are the velocities of the movement. These values can be multiplied by a constant to simulate "Mouse sensitivity" in your app.
+isMouse is a boolean that determines if the movement is true movement or falsely detected by the TAP.
 
 ## Subscribe to these events
 
-```
+```c#
 // ... some cool code
-TapInputManager.OnTapped += onTapped;
-TapInputManager.OnBluetoothTurnedOn += onBluetoothOn;
-TapInputManager.OnBluetoothTurnedOff += onBluetoothOff;
-TapInputManager.OnTapConnected += onTapConnected;
-TapInputManager.OnTapDisconnected += onTapDisconnected;
-// ... some more cool code
+TapInputManager.Instance.OnTapInputReceived += onTapped;
+TAPInputManager.Instance.OnMouseInputReceived += OnMoused;
+TapInputManager.Instance.OnBluetoothTurnedOn += onBluetoothOn;
+TapInputManager.Instance.OnBluetoothTurnedOff += onBluetoothOff;
+TapInputManager.Instance.OnTapConnected += onTapConnected;
+TapInputManager.Instance.OnTapDisconnected += onTapDisconnected;
+// ... some cool code
 
 void onTapped(string identifier, int combination) {
-// ... some awsome code
+
 }
 
-void onTapConnected(string identifier, string name) {
+void onTapConnected(string identifier, string name, int fw) {
 }
 
 void onTapDisconnected(string identifier) {
@@ -81,14 +90,11 @@ void onBluetoothOn() {
 void onBluetoothOff() {
 }
 
+void OnMoused(string identifier, int vx, int vy, bool isMouse) {
+
+}
+
 /// ...
-```
-
-## After subscribing to these events...
-
-Right after subscribing to the events you desire, You should call:
-```
-TapInputManager.startTAPInputManager ();
 ```
 
 This function tells TapInputManager to start it's engine.
@@ -150,12 +156,13 @@ This repository contains a test script: TapInputTest.cs that shows how TapInputM
 
 Please refer to the issues tab! :)
 
-# iOS Special Notes
+# iOS Special Build Notes
 
 After building for iOS, two things should be done in your xcode project:
 
 1) In your target settings, under General, 'deployment target' should be 8.0
 2) You should drag TAPKitUnityBridge.framework (from Frameworks/Plugins/iOS/TAP) to the 'embed frameworks' section, in your target settings, under 'general'.s
+3) In Build Settings -> "ALWAYS AMBED SWIFT STANDARD LIBRARIES" = YES.
 
 # Have Fun!
 
