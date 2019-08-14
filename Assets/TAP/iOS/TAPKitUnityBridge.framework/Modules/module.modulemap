@@ -1,0 +1,11 @@
+framework module TAPKitUnityBridge {
+  umbrella header "TAPKitUnityBridge.h"
+
+  export *
+  module * { export * }
+}
+
+module TAPKitUnityBridge.Swift {
+    header "TAPKitUnityBridge-Swift.h"
+    requires objc
+}
