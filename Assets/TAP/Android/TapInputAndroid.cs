@@ -20,8 +20,10 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 	public event Action<string, int, int, bool> OnMouseInputReceived;
 	public event Action<string[]> OnConnectedTapsReceived;
 	public event Action<string, int> OnModeReceived;
+    public event Action<string, int> OnAirGestureInputReceived;
+    public event Action<string, int> OnTapChangedState;
 
-	private AndroidJavaObject tapUnityAdapter;
+    private AndroidJavaObject tapUnityAdapter;
 
     public override void OnInit()
     {
@@ -163,6 +165,63 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 			OnModeReceived(argParts[0], mode);
 		}
 	}
+
+    private void onAirGestureInputReceived(String args)
+    {
+        if (OnAirGestureInputReceived != null)
+        {
+            string[] argParts = args.Split(ARGS_SEPERATOR);
+            if (argParts.Length >= 2)
+            {
+                int gesture = 0;
+                if (Int32.TryParse(argParts[1], out gesture)) 
+                {
+                    OnAirGestureInputReceived(argParts[0], gesture);
+                }
+            }
+            
+        }
+    }
+
+    private void onTapChangedState(String args)
+    {
+        if (OnTapChangedState != null)
+        {
+            string[] argParts = args.Split(ARGS_SEPERATOR);
+            if (argParts.Length >= 2)
+            {
+                int state = 0;
+                
+                if (Int32.TryParse(argParts[1], out state)) 
+                {
+                    OnTapChangedState(argParts[0], state);
+                }
+            }
+
+        }
+    }
+
+    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
+    {
+        tapUnityAdapter.Call("setMouseHIDEnabledInRawModeForAllTaps", enable);
+    }
+
+    public bool IsAnyTapInAirMouseState()
+    {
+        return tapUnityAdapter.Call<bool>("isAnyTapInAirMouseState");
+    }
+
+    public void readAllTapsState()
+    {
+
+        tapUnityAdapter.Call("readAllTapsState");
+    }
+
+    public bool IsAnyTapSupportsAirMouse()
+    {
+        return tapUnityAdapter.Call<bool>("isAnyTapSupportsAirMouse");
+    }
+
 }
 
 //#endif

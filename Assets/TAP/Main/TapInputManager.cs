@@ -22,6 +22,8 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
     public event Action<string, int, int, bool> OnMouseInputReceived;
     public event Action<string[]> OnConnectedTapsReceived;
     public event Action<string, int> OnModeReceived;
+    public event Action<string, int> OnAirGestureInputReceived;
+    public event Action<string, int> OnTapChangedState;
 
 #pragma warning restore 0067
 
@@ -48,6 +50,8 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         tapInput.OnBluetoothTurnedOn += onBluetoothTurnedOn;
         tapInput.OnBluetoothTurnedOff += onBluetoothTurnedOff;
         tapInput.OnMouseInputReceived += onMoused;
+        tapInput.OnAirGestureInputReceived += onAirGestureInputReceived;
+        tapInput.OnTapChangedState += onTapChangedState;
     }
 
     //    static TapInputManager()
@@ -158,6 +162,22 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         }
     }
 
+    private void onAirGestureInputReceived(string tapIdentifier, int gesture)
+    {
+        if (OnAirGestureInputReceived != null)
+        {
+            OnAirGestureInputReceived(tapIdentifier, gesture);
+        }
+    }
+
+    private void onTapChangedState(string tapIdentifier, int state)
+    {
+        if (OnTapChangedState != null)
+        {
+            OnTapChangedState(tapIdentifier, state);
+        }
+    }
+
     public void EnableDebug()
     {
         tapInput.EnableDebug();
@@ -176,5 +196,25 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
     public void StartTextMode(string tapIdentifier)
     {
         tapInput.StartTextMode(tapIdentifier);
+    }
+
+    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
+    {
+        tapInput.SetMouseHIDEnabledInRawModeForAllTaps(enable);
+    }
+
+    public bool IsAnyTapInAirMouseState()
+    {
+        return tapInput.IsAnyTapInAirMouseState();
+    }
+
+    public void readAllTapsState()
+    {
+        tapInput.readAllTapsState();
+    }
+
+    public bool IsAnyTapSupportsAirMouse()
+    {
+        return tapInput.IsAnyTapSupportsAirMouse();
     }
 }

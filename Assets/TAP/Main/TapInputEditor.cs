@@ -17,7 +17,8 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
     public event Action<string, int, int, bool> OnMouseInputReceived;
     public event Action<string[]> OnConnectedTapsReceived;
     public event Action<string, int> OnModeReceived;
-   
+    public event Action<string, int> OnAirGestureInputReceived;
+    public event Action<string, int> OnTapChangedState;
 #pragma warning restore 0067
 
     public override void OnInit()
@@ -47,5 +48,25 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
         if (OnTextModeStarted != null) {
             OnTextModeStarted(tapIdentifier);
         }
+    }
+
+    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
+    {
+
+    }
+
+    public bool IsAnyTapInAirMouseState()
+    {
+        return false;
+    }
+
+    public void readAllTapsState()
+    {
+        
+    }
+
+    public bool IsAnyTapSupportsAirMouse()
+    {
+        return false;
     }
 }

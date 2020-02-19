@@ -16,6 +16,8 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 	public event Action<string, int, int, bool> OnMouseInputReceived;
 	public event Action<string> OnControllerModeStarted;
 	public event Action<string> OnTextModeStarted;
+    public event Action<string, int> OnAirGestureInputReceived;
+    public event Action<string, int> OnTapChangedState;
 	// WTF:
 	public event Action<string[]> OnConnectedTapsReceived;
 	public event Action<string, int> OnModeReceived;
@@ -148,6 +150,24 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		}
 	}
 
+    void SetMouseHIDEnabledInRawModeForAllTaps(bool enable) 
+    {
+    }
+
+    bool IsAnyTapInAirMouseState()
+    {
+        return false;
+    }
+
+
+    void readAllTapsState()
+    {
+    }
+
+    public bool IsAnyTapSupportsAirMouse()
+    {
+        return false;
+    }
 	
 }
 
