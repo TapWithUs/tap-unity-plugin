@@ -16,8 +16,9 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 	public event Action<string, int, int, bool> OnMouseInputReceived;
 	public event Action<string> OnControllerModeStarted;
 	public event Action<string> OnTextModeStarted;
-    public event Action<string, int> OnAirGestureInputReceived;
-    public event Action<string, int> OnTapChangedState;
+    public event Action<string, TapAirGesture> OnAirGestureInputReceived;
+    public event Action<string, bool> OnTapChangedAirGestureState;
+	public event Action<string, RawSensorData> OnRawSensorDataReceived;
 	// WTF:
 	public event Action<string[]> OnConnectedTapsReceived;
 	public event Action<string, int> OnModeReceived;
@@ -41,10 +42,28 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 	private static extern void TAPKit_setUnityCallbackForTapDisconnected (Action<string> c);
 
 	[DllImport("__Internal")]
+	private static extern void TAPKit_setUnityCallbackForAirGestured(Action<string,int> c);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setUnityCallbackForChangedAirGestureState(Action<string, bool> c);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setUnityCallbackForRawSensorDataReceived(Action<string, string, string> c);
+
+	[DllImport("__Internal")]
 	private static extern void TAPKit_setControllerMode(string identifier);
 
 	[DllImport("__Internal")]
 	private static extern void TAPKit_setTextMode(string identifier);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setControllerWithMouseHIDMode(string identifier);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setRawSensorMode(string identifier, int devAccel, int imuGyro, int imuAccel);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_vibrate(string identifier, string durationsString, string delimeter);
 
 	[DllImport("__Internal")]
 	private static extern void TAPKit_enableDebug();
@@ -58,8 +77,9 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 	private delegate void StringAndIntParamDelegate(string s, int i);
 	private delegate void StringAndStringParamDelegate(string s1, string s2);
 	private delegate void StringAndTwoIntsParamDelegate(string s1, int i1, int i2);
-
-
+	private delegate void ThreeStringsParamDelegate(string s1, string s2, string s3);
+	private delegate void StringAndBoolParamDelegate(string s1, bool b1);
+	private delegate void TwoStringsAndIntParamDelegate(string s1, string s2, int i1);
 	public override void OnInit()
 	{
 		TAPKit_setUnityCallbackForTapped (onTapped);
@@ -67,7 +87,10 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		TAPKit_setUnityCallbackForTapConnected (onTapConnected);
 		TAPKit_setUnityCallbackForTapDisconnected (onTapDisconnected);
 		TAPKit_setUnityCallbackForBluetoothState (onBluetoothState);
-		TAPKit_start ();
+		TAPKit_setUnityCallbackForAirGestured(onAirGestured);
+	    TAPKit_setUnityCallbackForChangedAirGestureState(onTapChangedAirGestureState);
+	    TAPKit_setUnityCallbackForRawSensorDataReceived(onRawSensorDataReceived);
+	    TAPKit_start ();
 	}
 
 	[MonoPInvokeCallback(typeof(BoolParamDelegate))] 
@@ -97,7 +120,44 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		}
 	}
 
-	[MonoPInvokeCallback(typeof(StringAndStringParamDelegate))]
+    [MonoPInvokeCallback(typeof(StringAndIntParamDelegate))]
+    private static void onAirGestured(string identifier, int gesture)
+    {
+        if (TapInputIOS.Instance.OnAirGestureInputReceived != null)
+        {
+			if (Enum.IsDefined(typeof(TapAirGesture), gesture))
+            {
+				TapInputIOS.Instance.OnAirGestureInputReceived(identifier, (TapAirGesture)gesture);
+            }
+
+		}
+	}
+
+
+
+    [MonoPInvokeCallback(typeof(ThreeStringsParamDelegate))]
+    private static void onRawSensorDataReceived(string identifier, string data, string delimeter)
+    {
+        if (TapInputIOS.Instance.OnRawSensorDataReceived != null)
+        {
+        	RawSensorData rsData = RawSensorData.makeFromString(data, delimeter); 
+            if (rsData != null)
+            {
+				TapInputIOS.Instance.OnRawSensorDataReceived(identifier, rsData);
+            }
+        }
+    }
+
+    [MonoPInvokeCallback(typeof(StringAndBoolParamDelegate))]
+    private static void onTapChangedAirGestureState(string identifier, bool isAirGesture)
+    {
+        if (TapInputIOS.Instance.OnTapChangedAirGestureState != null)
+        {
+			TapInputIOS.Instance.OnTapChangedAirGestureState(identifier, isAirGesture);
+        }
+    }
+
+	[MonoPInvokeCallback(typeof(TwoStringsAndIntParamDelegate))]
 	private static void onTapConnected(string identifier, string name, int fw) {
 		if (TapInputIOS.Instance.OnTapConnected != null) {
 			TapInputIOS.Instance.OnTapConnected (identifier, name, fw);
@@ -111,14 +171,6 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		}
 	}
 
-//	public static void startTAP() {
-//		TAPKit_setUnityCallbackForTapped (onTapped);
-//		TAPKit_setUnityCallbackForMoused (onMoused);
-//		TAPKit_setUnityCallbackForTapConnected (onTapConnected);
-//		TAPKit_setUnityCallbackForTapDisconnected (onTapDisconnected);
-//		TAPKit_setUnityCallbackForBluetoothState (onBluetoothState);
-//		TAPKit_start ();
-//	}
 
 	public void EnableDebug() { 
 		TAPKit_enableDebug ();
@@ -128,46 +180,41 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		TAPKit_disableDebug ();
 	}
 
-//	public void setDebugLogging(bool enabled) {
-//		if (enabled) {
-//			TAPKit_enableDebug ();
-//		} else {
-//			TAPKit_disableDebug ();
-//		}
-//	}
 
 	public void StartControllerMode(string identifier) {
 		TAPKit_setControllerMode (identifier);
-		if (TapInputIOS.Instance.OnControllerModeStarted != null) { 
-			TapInputIOS.Instance.OnControllerModeStarted (identifier);
-		}
 	}
 
 	public void StartTextMode(string identifier) {
 		TAPKit_setTextMode (identifier);
-		if (TapInputIOS.Instance.OnTextModeStarted != null) { 
-			TapInputIOS.Instance.OnControllerModeStarted (identifier);
-		}
 	}
 
-    void SetMouseHIDEnabledInRawModeForAllTaps(bool enable) 
+	public void StartControllerWithMouseHIDMode(string tapIdentifier)
     {
+		TAPKit_setControllerWithMouseHIDMode(tapIdentifier);
     }
 
-    bool IsAnyTapInAirMouseState()
+	public void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity)
     {
-        return false;
+		TAPKit_setRawSensorMode(tapIdentifier, deviceAccelerometerSensitivity, imuGyroSensitivity, imuAccelerometerSensitivity);
+    }
+
+	public void Vibrate(string tapIdentifier, int[] durations)
+    {
+		string durationsString = "";
+		string delimeter = "^";
+        for (int i=0; i<durations.Length; i++)
+        {
+			durationsString = durationsString + durations[i].ToString();
+            if (i < durations.Length-1)
+            {
+				durationsString = durationsString + delimeter;
+            }
+        }
+		TAPKit_vibrate(tapIdentifier, durationsString, delimeter);
     }
 
 
-    void readAllTapsState()
-    {
-    }
-
-    public bool IsAnyTapSupportsAirMouse()
-    {
-        return false;
-    }
 	
 }
 

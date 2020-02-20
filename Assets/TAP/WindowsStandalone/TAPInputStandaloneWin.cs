@@ -1,4 +1,4 @@
-﻿#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+﻿#if false//UNITY_STANDALONE_WIN && !UNITY_EDITOR
 
 using System.Collections;
 using System.Collections.Generic;
@@ -33,14 +33,12 @@ public class TapInputStandaloneWin : Singleton<TapInputStandaloneWin>, ITapInput
     public event Action OnBluetoothTurnedOff;
     public event Action<string, string, int> OnTapConnected;
     public event Action<string> OnTapDisconnected;
-    public event Action<string> OnControllerModeStarted;
-    public event Action<string> OnTextModeStarted;
     public event Action<string, int> OnTapInputReceived;
     public event Action<string, int, int, bool> OnMouseInputReceived;
     public event Action<string[]> OnConnectedTapsReceived;
     public event Action<string, int> OnModeReceived;
     public event Action<string, int> OnAirGestureInputReceived;
-    public event Action<string, int> OnTapChangedState;
+    public event Action<string, int> OnTapChangedAirGestureState;
 
     public void DisableDebug()
     {

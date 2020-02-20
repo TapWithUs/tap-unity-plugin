@@ -18,8 +18,12 @@ The class contains 5 events:
 public static Action OnBluetoothTurnedOn;
 public static Action OnBluetoothTurnedOff;
 public static Action<string, int> OnTapped;
+event Action<string, int, int, bool> OnMouseInputReceived; 
 public static Action<string, string> OnTapConnected;
 public static Action<string> OnTapDisconnected;
+event Action<string, TapAirGesture> OnAirGestureInputReceived;
+event Action<string, bool> OnTapChangedAirGestureState;
+event Action<string, RawSensorData> OnRawSensorDataReceived;
 
 ```
 
@@ -62,43 +66,64 @@ This event describe the mouse movement of a TAP.
 vx,vy are the velocities of the movement. These values can be multiplied by a constant to simulate "Mouse sensitivity" in your app.
 isMouse is a boolean that determines if the movement is true movement or falsely detected by the TAP.
 
-## Subscribe to these events
-
+### OnAirGestureInputReceived(string tapIdentifier, TapAirGesture gesture)
+This event is being called when the user is doing Air Gesture (with TAP version 2.0).
 ```c#
-// ... some cool code
-TapInputManager.Instance.OnTapInputReceived += onTapped;
-TAPInputManager.Instance.OnMouseInputReceived += OnMoused;
-TapInputManager.Instance.OnBluetoothTurnedOn += onBluetoothOn;
-TapInputManager.Instance.OnBluetoothTurnedOff += onBluetoothOff;
-TapInputManager.Instance.OnTapConnected += onTapConnected;
-TapInputManager.Instance.OnTapDisconnected += onTapDisconnected;
-// ... some cool code
-
-void onTapped(string identifier, int combination) {
-
+public enum TapAirGesture
+{
+    OneFingerUp = 2,
+    TwoFingersUp = 3,
+    OneFingerDown = 4,
+    TwoFingersDown = 5,
+    OneFingerLeft = 6,
+    TwoFingersLeft = 7,
+    OnefingerRight = 8,
+    TwoFingersRight = 9,
+    IndexToThumbTouch = 10,
+    MiddleToThumbTouch = 11
 }
+```
+### OnTapChangedState(string tapIdentifier, bool isAirGesture)
+This event is being called when the user enter or leaves AirGesture State.
 
-void onTapConnected(string identifier, string name, int fw) {
+### OnRawSensorDataReceived(string tapIdentifier, RawSensorData data)
+This event is being called when a TAP is in Raw Sensor Mode .
+This event is being called at a rate of 200 calls / minute (data stream).
+
+RawSensorData Object has a timestamp, type and an array points(x,y,z).
+type is RawSensorDataType enum:
+
+
+```c# 
+void onRawSensorDataReceived(string tapIdentifier, RawSensorData data)
+{
+    if (data.type == RawSensorData.DataType.Device)
+    {
+        // Fingers accelerometer.
+        // Each point in array represents the accelerometer value of a finger (thumb, index, middle, ring, pinky).
+        Vector3 thumb = data.GetPoint(RawSensorData.iDEV_THUMB);
+
+        if (thumb != null) 
+        {
+            // Do something with thumb.x, thumb.y, thumb.z
+        }
+        // Etc... use indexes: RawSensorData.iDEV_THUMB, RawSensorData.iDEV_INDEX, RawSensorData.iDEV_MIDDLE, RawSensorData.iDEV_RING, RawSensorData.iDEV_PINKY
+    }
+    else if (data.type == RawSensorData.DataType.IMU)
+    {
+        // Refers to an additional accelerometer on the Thumb sensor and a Gyro (placed on the thumb unit as well).
+        Vector3 gyro = data.GetPoint(RawSensorData.iIMU_GYRO);
+        if (gyro != null)
+        {
+            // Do something with gyro.x, gyro.y, gyro.z
+        }
+        // Etc... use indexes: RawSensorData.iIMU_GYRO, RawSensorData.iIMU_ACCELEROMETER
+    }
 }
-
-void onTapDisconnected(string identifier) {
-}
-
-void onBluetoothOn() {
-}
-
-void onBluetoothOff() {
-}
-
-void OnMoused(string identifier, int vx, int vy, bool isMouse) {
-
-}
-
-/// ...
 ```
 
-This function tells TapInputManager to start it's engine.
-Should be called once.. Usually in the main screen where you need the "tapConnected" callback
+IMU is the Gyro and Accelerometer sensors in the thumb unit.
+Device is the Accelerometers sensors for each finger (Thumb, Index, Middle, Ring, Pinky).
 
 ## Converting a binary combination to fingers array
 
@@ -118,24 +143,62 @@ fingers[4] indicates if the pinky finger is being tapped.
 ## TAPInputMode
 
 Each TAP has a mode in which it works as.
-Two modes available:
-CONTROLLER MODE (Default) - allows receiving the "tapped" action callback with the fingers combination without any post-processing.
-TEXT MODE - the TAP device will behave as a plain bluetooth keyboard, "tapped" action will NOT be called.
+Four modes available: 
+CONTROLLER MODE (Default) 
+    allows receiving the "tapped" and "moused" func callbacks in TAPKitDelegate with the fingers combination without any post-processing.
+    
+TEXT MODE 
+    the TAP device will behave as a plain bluetooth keyboard, "tapped" and "moused" funcs in TAPKitDelegate will not be called.
+CONTROLLER MODE WITH MOUSE HiD 
+    Same as controller mode but allows the user to use the mouse also as a regular mouse input.
+    Starting iOS 13, Apple added Assitive Touch feature. (Can be toggled within accessibility settings on iPhone).
+    This adds a cursor to the screen that can be navigated using TAP device. 
+
+RAW SENSOR DATA MODE
+    This will stream the sensors (Gyro and Accelerometer) values. More or that later ...
 
 When a TAP device is connected it is by default set to controller mode.
 
-If you wish for a TAP to act as a bluetooth keyboard and allow the user to enter text input in your app, you can set the mode:
+Changing tap mode:
 
+```c#
+void StartControllerMode(string tapIdentifier);
+void StartTextMode(string tapIdentifier);
+void StartControllerWithMouseHIDMode(string tapIdentifier);
+void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity);
+```
 
+## Raw Sensor Mode
+
+n raw sensors mode, the TAP continuously sends raw data from the following sensors:
+    1. Five 3-axis accelerometers on each finger ring.
+    2. IMU (3-axis accelerometer + gyro) located on the thumb (**for TAP Strap 2 only**).
+        
+```c#
+void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity);
 ```
-TapInputManager.setTextMode (identifier);
+When puting TAP in Raw Sensor Mode, the sensitivities of the values can be defined by the developer.
+deviceAccelerometer refers to the sensitivities of the fingers' accelerometers. Range: 1 to 4.
+imuGyro refers to the gyro sensitivity on the thumb's sensor. Range: 1 to 4.
+imuAccelerometer refers to the accelerometer sensitivity on the thumb's sensor. Range: 1 to 5.
+Use zero for default sensitivity value.
+
+## Vibrations/Haptic
+
+Send Haptic/Vibration to TAP devices.
+```c# 
+void Vibrate(string tapIdentifier, int[] durations);
 ```
 
-Just don't forget to switch back to controller mode after the user has entered the text :
+durations: An array of durations in the format of haptic, pause, haptic, pause ... You can specify up to 18 elements in this array. The rest will be ignored.
+Each array element is defined in milliseconds.
 
+Example:
+```c#
+tapInputManager.Vibrate(tapIdentifier, new int[] { 500, 100, 500 });
 ```
-TapInputManager.setControllerMode(identifier);
-```
+Will send two 500 milliseconds haptics with a 100 milliseconds pause in the middle.
+
 
 ## Debug Logs
 

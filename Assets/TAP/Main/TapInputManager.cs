@@ -22,9 +22,9 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
     public event Action<string, int, int, bool> OnMouseInputReceived;
     public event Action<string[]> OnConnectedTapsReceived;
     public event Action<string, int> OnModeReceived;
-    public event Action<string, int> OnAirGestureInputReceived;
-    public event Action<string, int> OnTapChangedState;
-
+    public event Action<string, TapAirGesture> OnAirGestureInputReceived;
+    public event Action<string, bool> OnTapChangedAirGestureState;
+    public event Action<string, RawSensorData> OnRawSensorDataReceived;
 #pragma warning restore 0067
 
     public override void OnInit()
@@ -39,8 +39,8 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
 #elif UNITY_IOS
         tapInput = TapInputIOS.Instance;
 
-#elif UNITY_STANDALONE_WIN
-        tapInput = TapInputStandaloneWin.Instance;
+//#elif UNITY_STANDALONE_WIN
+//        tapInput = TapInputStandaloneWin.Instance;
 
 #endif
 
@@ -51,74 +51,11 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         tapInput.OnBluetoothTurnedOff += onBluetoothTurnedOff;
         tapInput.OnMouseInputReceived += onMoused;
         tapInput.OnAirGestureInputReceived += onAirGestureInputReceived;
-        tapInput.OnTapChangedState += onTapChangedState;
+        tapInput.OnTapChangedAirGestureState += onTapChangedAirGestureState;
+        tapInput.OnRawSensorDataReceived += onRawSensorDataReceived;
     }
 
-    //    static TapInputManager()
-    //    {
-
-    //#if UNITY_ANDROID && !UNITY_EDITOR
-    //        tapInput = TapInputAndroid.Instance;
-
-    //        tapInput.OnDeviceConnected += onTapConnectedAndroidTemp;
-    //        tapInput.OnDeviceDisconnected += onTapDisconnected;
-    //        tapInput.OnTapInputReceived += onTapped;
-    //        tapInput.OnBluetoothTurnedOn += onBluetoothTurnedOn;
-    //        tapInput.OnBluetoothTurnedOff += onBluetoothTurnedOff;
-    //        tapInput.OnMouseInputReceived += onMoused;
-    //#endif
-
-    //#if UNITY_IOS && !UNITY_EDITOR
-    //		const string tapinputiosname = "TapInputIOS";
-    //		GameObject goios = GameObject.Find(tapinputiosname);
-    //		if (goios == null)
-    //		{
-    //			Debug.Log("TapInputManager initializing iOS");
-    //			goios = new GameObject(tapinputiosname);
-    //			goios.AddComponent(typeof (TapInputIOS));
-    //			DontDestroyOnLoad(goios);
-    //			TapInputIOS.OnTapConnected += onTapConnected;
-    //			TapInputIOS.OnTapDisconnected += onTapDisconnected;
-    //			TapInputIOS.OnBluetoothTurnedOn += onBluetoothTurnedOn;
-    //			TapInputIOS.OnBluetoothTurnedOff += onBluetoothTurnedOff;
-    //			TapInputIOS.OnTapped += onTapped;
-    //			TapInputIOS.OnMoused += onMoused;
-    //			Debug.Log("TapInputManager initializing iOS successful");
-
-
-    //		}
-    //#endif
-
-    //#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-
-    //        const string tapinputstandalonewinename = "TapInputStandaloneWin";
-    //        GameObject gostandalonewin = GameObject.Find(tapinputstandalonewinename);
-    //        if (gostandalonewin == null)
-    //        {
-
-    //            Debug.Log("TapInputManager initializing standalone win");
-    //            gostandalonewin = new GameObject(tapinputstandalonewinename);
-    //            gostandalonewin.AddComponent(typeof(TAPInputStandaloneWin));
-    //            DontDestroyOnLoad(gostandalonewin);
-    //            TAPInputStandaloneWin.OnTapConnected += onTapConnected;
-    //            TAPInputStandaloneWin.OnTapDisconnected += onTapDisconnected;
-    //            TAPInputStandaloneWin.OnTapped += onTapped;
-    //            TAPInputStandaloneWin.OnMoused += onMoused;
-    //            Debug.Log("TapInputManager initializing standalone win successful");
-
-
-    //        }
-    //#endif
-
-    //    const string goname = "TapInputManager";
-    //    GameObject gomanager = GameObject.Find(goname);
-    //    if (gomanager == null)
-    //    {
-    //        gomanager = new GameObject(goname);
-    //        gomanager.AddComponent(typeof(TapInputManager));
-    //        DontDestroyOnLoad(gomanager);
-    //    }
-    //}
+    
 
     private void onTapConnected(string identifier, string name, int fw)
     {
@@ -162,7 +99,7 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         }
     }
 
-    private void onAirGestureInputReceived(string tapIdentifier, int gesture)
+    private void onAirGestureInputReceived(string tapIdentifier, TapAirGesture gesture)
     {
         if (OnAirGestureInputReceived != null)
         {
@@ -170,11 +107,19 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         }
     }
 
-    private void onTapChangedState(string tapIdentifier, int state)
+    private void onRawSensorDataReceived(string tapIdentifier, RawSensorData rawSensorData)
     {
-        if (OnTapChangedState != null)
+        if (OnRawSensorDataReceived != null)
         {
-            OnTapChangedState(tapIdentifier, state);
+            OnRawSensorDataReceived(tapIdentifier, rawSensorData);
+        }
+    }
+
+    private void onTapChangedAirGestureState(string tapIdentifier, bool isAirGesture)
+    {
+        if (OnTapChangedAirGestureState != null)
+        {
+            OnTapChangedAirGestureState(tapIdentifier, isAirGesture);
         }
     }
 
@@ -198,23 +143,18 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         tapInput.StartTextMode(tapIdentifier);
     }
 
-    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
+    public void StartControllerWithMouseHIDMode(string tapIdentifier)
     {
-        tapInput.SetMouseHIDEnabledInRawModeForAllTaps(enable);
+        tapInput.StartControllerWithMouseHIDMode(tapIdentifier);
     }
 
-    public bool IsAnyTapInAirMouseState()
+    public void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity) 
     {
-        return tapInput.IsAnyTapInAirMouseState();
+        tapInput.StartRawSensorMode(tapIdentifier, deviceAccelerometerSensitivity, imuGyroSensitivity, imuAccelerometerSensitivity);
     }
 
-    public void readAllTapsState()
+    public void Vibrate(string tapIdentifier, int[] durations)
     {
-        tapInput.readAllTapsState();
-    }
-
-    public bool IsAnyTapSupportsAirMouse()
-    {
-        return tapInput.IsAnyTapSupportsAirMouse();
+        tapInput.Vibrate(tapIdentifier, durations);
     }
 }

@@ -15,10 +15,12 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
     public event Action<string> OnTextModeStarted;
     public event Action<string, int> OnTapInputReceived;
     public event Action<string, int, int, bool> OnMouseInputReceived;
+    public event Action<string, RawSensorData> OnRawSensorDataReceived;
     public event Action<string[]> OnConnectedTapsReceived;
     public event Action<string, int> OnModeReceived;
-    public event Action<string, int> OnAirGestureInputReceived;
-    public event Action<string, int> OnTapChangedState;
+    public event Action<string, TapAirGesture> OnAirGestureInputReceived;
+    public event Action<string, bool> OnTapChangedAirGestureState;
+
 #pragma warning restore 0067
 
     public override void OnInit()
@@ -38,35 +40,31 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
 
     public void StartControllerMode(string tapIdentifier)
     {
-        if (OnControllerModeStarted != null) {
-            OnControllerModeStarted(tapIdentifier);
-        }
+        
     }
 
     public void StartTextMode(string tapIdentifier)
     {
-        if (OnTextModeStarted != null) {
-            OnTextModeStarted(tapIdentifier);
-        }
-    }
-
-    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
-    {
-
-    }
-
-    public bool IsAnyTapInAirMouseState()
-    {
-        return false;
-    }
-
-    public void readAllTapsState()
-    {
         
     }
 
-    public bool IsAnyTapSupportsAirMouse()
+    public void StartControllerWithMouseHIDMode(string tapIdentifier)
     {
-        return false;
+
     }
+
+    public void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity)
+    {
+
+    }
+
+    public void Vibrate(string tapIdentifier, int[] durations)
+    {
+
+    }
+
+
+
+    
+
 }

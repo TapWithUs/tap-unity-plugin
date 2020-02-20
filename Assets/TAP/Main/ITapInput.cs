@@ -8,25 +8,21 @@ public interface ITapInput
     event Action OnBluetoothTurnedOff;
     event Action<string, string, int> OnTapConnected;
     event Action<string> OnTapDisconnected;
-    event Action<string> OnControllerModeStarted;
-    event Action<string> OnTextModeStarted;
     event Action<string, int> OnTapInputReceived;
     event Action<string, int, int, bool> OnMouseInputReceived;
     event Action<string[]> OnConnectedTapsReceived;
-    event Action<string, int> OnModeReceived;
-    event Action<string, int> OnAirGestureInputReceived;
-    event Action<string, int> OnTapChangedState;
+    event Action<string, TapAirGesture> OnAirGestureInputReceived;
+    event Action<string, bool> OnTapChangedAirGestureState;
+    event Action<string, RawSensorData> OnRawSensorDataReceived;
     
     void EnableDebug();
     void DisableDebug();
     void StartControllerMode(string tapIdentifier);
     void StartTextMode(string tapIdentifier);
+    void StartControllerWithMouseHIDMode(string tapIdentifier);
+    void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity);
 
-    // Test
-    void SetMouseHIDEnabledInRawModeForAllTaps(bool enable);
-    bool IsAnyTapInAirMouseState();
-    bool IsAnyTapSupportsAirMouse();
-    void readAllTapsState();
-    //
+    void Vibrate(string tapIdentifier, int[] durations);
+    
 
 }

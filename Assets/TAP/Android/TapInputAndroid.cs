@@ -1,4 +1,4 @@
-﻿//#if UNITY_ANDROID && !UNITY_EDITOR
+﻿#if UNITY_ANDROID //&& !UNITY_EDITOR
 
 using UnityEngine;
 using System;
@@ -20,8 +20,9 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 	public event Action<string, int, int, bool> OnMouseInputReceived;
 	public event Action<string[]> OnConnectedTapsReceived;
 	public event Action<string, int> OnModeReceived;
-    public event Action<string, int> OnAirGestureInputReceived;
-    public event Action<string, int> OnTapChangedState;
+    public event Action<string, TapAirGesture> OnAirGestureInputReceived;
+    public event Action<string, bool> OnTapChangedAirGestureState;
+	public event Action<string, RawSensorData> OnRawSensorDataReceived;
 
     private AndroidJavaObject tapUnityAdapter;
 
@@ -66,6 +67,7 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 	public void StartTextMode(string tapIdentifier)
 	{
 		tapUnityAdapter.Call ("startTextMode", tapIdentifier);
+        
 	}
 
 	private void onBluetoothTurnedOn() {
@@ -166,7 +168,24 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 		}
 	}
 
-    private void onAirGestureInputReceived(String args)
+    private void onRawSensorDataReceived(String rsArg)
+    {
+        if (OnRawSensorDataReceived != null)
+        {
+			string[] argParts = rsArg.Split(ARGS_SEPERATOR);
+            if (argParts.Length == 2)
+            {
+				RawSensorData data = RawSensorData.makeFromString(argParts[1], "^");
+                if (data != null)
+                {
+					OnRawSensorDataReceived(argParts[0], data);
+                }
+            }
+		}
+    }
+
+
+	private void onAirGestureInputReceived(String args)
     {
         if (OnAirGestureInputReceived != null)
         {
@@ -176,16 +195,19 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
                 int gesture = 0;
                 if (Int32.TryParse(argParts[1], out gesture)) 
                 {
-                    OnAirGestureInputReceived(argParts[0], gesture);
+					if (Enum.IsDefined(typeof(TapAirGesture), gesture))
+                    {
+						OnAirGestureInputReceived(argParts[0], (TapAirGesture)gesture);
+                    }
                 }
             }
             
         }
     }
 
-    private void onTapChangedState(String args)
+    private void onTapChangedAirGestureState(String args)
     {
-        if (OnTapChangedState != null)
+        if (OnTapChangedAirGestureState != null)
         {
             string[] argParts = args.Split(ARGS_SEPERATOR);
             if (argParts.Length >= 2)
@@ -194,34 +216,40 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
                 
                 if (Int32.TryParse(argParts[1], out state)) 
                 {
-                    OnTapChangedState(argParts[0], state);
+                    OnTapChangedAirGestureState(argParts[0], state == 1);
                 }
             }
 
         }
     }
 
-    public void SetMouseHIDEnabledInRawModeForAllTaps(bool enable)
+	public void StartControllerWithMouseHIDMode(string tapIdentifier)
     {
-        tapUnityAdapter.Call("setMouseHIDEnabledInRawModeForAllTaps", enable);
+		tapUnityAdapter.Call("startControllerWithMouseHIDMode", tapIdentifier);
     }
 
-    public bool IsAnyTapInAirMouseState()
+	public void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity)
     {
-        return tapUnityAdapter.Call<bool>("isAnyTapInAirMouseState");
+		tapUnityAdapter.Call("startRawSensorMode", tapIdentifier, deviceAccelerometerSensitivity, imuGyroSensitivity, imuAccelerometerSensitivity);
     }
 
-    public void readAllTapsState()
+	public void Vibrate(string tapIdentifier, int[] durations)
     {
+		string durationsString = "";
+		string delimeter = "^";
+		for (int i = 0; i < durations.Length; i++)
+		{
+			durationsString = durationsString + durations[i].ToString();
+			if (i < durations.Length - 1)
+			{
+				durationsString = durationsString + delimeter;
+			}
+		}
+		tapUnityAdapter.Call("vibrate", tapIdentifier, durationsString, delimeter);
 
-        tapUnityAdapter.Call("readAllTapsState");
-    }
+	}
 
-    public bool IsAnyTapSupportsAirMouse()
-    {
-        return tapUnityAdapter.Call<bool>("isAnyTapSupportsAirMouse");
-    }
 
 }
 
-//#endif
+#endif

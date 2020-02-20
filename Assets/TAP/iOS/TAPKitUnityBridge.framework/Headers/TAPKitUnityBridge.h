@@ -2,11 +2,11 @@
 //  TAPKitUnityBridge.h
 //  TAPKitUnityBridge
 //
-//  Created by Shahar Biran on 11/04/2018.
-//  Copyright © 2018 Shahar Biran. All rights reserved.
+//  Created by Shahar Biran on 19/02/2020.
+//  Copyright © 2020 Shahar Biran. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for TAPKitUnityBridge.
 FOUNDATION_EXPORT double TAPKitUnityBridgeVersionNumber;

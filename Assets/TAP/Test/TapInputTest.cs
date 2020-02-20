@@ -12,19 +12,20 @@ public class TapInputTest : MonoBehaviour
 
     private bool mouseHIDEnabled;
 
+    private string connectedTapIdentifier="";
+
 	void Start() 
     {
 
         tapInputManager = TapInputManager.Instance;
 
-        //tapInputManager.OnTapInputReceived += onTapped;
-        //tapInputManager.OnBluetoothTurnedOn += onBluetoothOn;
-        //tapInputManager.OnBluetoothTurnedOff += onBluetoothOff;
-        //tapInputManager.OnTapConnected += onTapConnected;
-        //tapInputManager.OnTapDisconnected += onTapDisconnected;
-        //tapInputManager.OnMouseInputReceived += onMoused;
+        tapInputManager.OnTapInputReceived += onTapped;
+        tapInputManager.OnTapConnected += onTapConnected;
+        tapInputManager.OnTapDisconnected += onTapDisconnected;
+        tapInputManager.OnMouseInputReceived += onMoused;
         tapInputManager.OnAirGestureInputReceived += onAirGestureInputReceived;
-        tapInputManager.OnTapChangedState += onTapChangedState;
+        tapInputManager.OnTapChangedAirGestureState += onTapChangedState;
+        tapInputManager.OnRawSensorDataReceived += onRawSensorDataReceived;
         tapInputManager.EnableDebug ();
         mouseHIDEnabled = false;
         
@@ -49,54 +50,63 @@ public class TapInputTest : MonoBehaviour
         Log("onTapped : " + identifier + ", " + combination);
 	}
 
-	//void onTapConnected(string identifier, string name, int fw) 
- //   {
-	//	Debug.Log ("UNITY TAP CALLBACK --- onTapConnected : " + identifier + ", " + name + ", FW: " + fw);
- //       Log("UNITY TAP CALLBACK-- - onTapConnected : " + identifier + ", " + name);
-
-	//}
-
-	//void onTapDisconnected(string identifier) 
- //   {
-	//	Debug.Log ("UNITY TAP CALLBACK --- onTapDisconnected : " + identifier);
- //       Log("UNITY TAP CALLBACK --- onTapDisconnected : " + identifier);
-	//}
-
-	//void onBluetoothOn() 
- //   {
-	//	Debug.Log ("UNITY TAP CALLBACK --- onBluetoothOn");
-	//}
-
-	//void onBluetoothOff() 
- //   {
-	//	Debug.Log("UNITY TAP CALLBACK --- onBluetoothOff");
-	//}
-
-    void onAirGestureInputReceived(string tapIdentifier, int gesture)
+	void onTapConnected(string identifier, string name, int fw)
     {
+        Debug.Log("onTapConnected : " + identifier + ", " + name + ", FW: " + fw);
+        Log("onTapConnected : " + identifier + ", " + name);
+        this.connectedTapIdentifier = identifier;
+    }
+
+    void onTapDisconnected(string identifier)
+    {
+        Debug.Log("UNITY TAP CALLBACK --- onTapDisconnected : " + identifier);
+        Log("UNITY TAP CALLBACK --- onTapDisconnected : " + identifier);
+        if (identifier.Equals(this.connectedTapIdentifier))
+        {
+            this.connectedTapIdentifier = "";
+        }
+    }
+
+    
+    void onAirGestureInputReceived(string tapIdentifier, TapAirGesture gesture)
+    {
+        
         Log("OnAirGestureInputReceived: " + tapIdentifier + ", " + gesture.ToString());
     }
 
-    void onTapChangedState(string tapIdentifier, int state)
+    void onTapChangedState(string tapIdentifier, bool isAirGesture)
     {
-        Log("OnTapChangedState: " + tapIdentifier + ", " + state.ToString());
+        Log("onTapChangedState: " + tapIdentifier + ", " + isAirGesture.ToString());
+        
     }
 
-    public void OnButtonMouseHIDClicked()
+    void onRawSensorDataReceived(string tapIdentifier, RawSensorData data)
     {
-        mouseHIDEnabled = !mouseHIDEnabled;
-        tapInputManager.SetMouseHIDEnabledInRawModeForAllTaps(mouseHIDEnabled);
-        Log("MouseHIDEnabled :" + mouseHIDEnabled.ToString());
-    }
+        //RawSensorData Object has a timestamp, type and an array points(x,y,z).
+        if (data.type == RawSensorData.DataType.Device)
+        {
+            // Fingers accelerometer.
+            // Each point in array represents the accelerometer value of a finger (thumb, index, middle, ring, pinky).
+            Vector3 thumb = data.GetPoint(RawSensorData.iDEV_THUMB);
 
-    public void OnButtonReadStateClicked()
-    {
-        tapInputManager.readAllTapsState();
+            if (thumb != null) 
+            {
+                // Do something with thumb.x, thumb.y, thumb.z
+            }
+            // Etc... use indexes: RawSensorData.iDEV_THUMB, RawSensorData.iDEV_INDEX, RawSensorData.iDEV_MIDDLE, RawSensorData.iDEV_RING, RawSensorData.iDEV_PINKY
+        }
+        else if (data.type == RawSensorData.DataType.IMU)
+        {
+            // Refers to an additional accelerometer on the Thumb sensor and a Gyro (placed on the thumb unit as well).
+            Vector3 gyro = data.GetPoint(RawSensorData.iIMU_GYRO);
+            if (gyro != null)
+            {
+                // Do something with gyro.x, gyro.y, gyro.z
+            }
+            // Etc... use indexes: RawSensorData.iIMU_GYRO, RawSensorData.iIMU_ACCELEROMETER
+        }
+        // -------------------------------------------------
+        // -- Please refer readme.md for more information --
+        // -------------------------------------------------
     }
-
-    public void OnButtonAnyStateClicked()
-    {
-        Log("Any Tap Supports AirMouse ? " + tapInputManager.IsAnyTapSupportsAirMouse());
-    }
-
 }

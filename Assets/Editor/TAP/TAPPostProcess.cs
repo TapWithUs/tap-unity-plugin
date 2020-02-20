@@ -39,6 +39,18 @@ public class TAPPostProcess {
 			Debug.LogError ("Error adding TAPKitUnityBridge to embed frameworks");
 		}
 
+		//string unityBridgeFrameworkPath = "Frameworks/TAP/iOS/TAPKit.framework";
+		//string guidTAPKitUnityBridge = pbxProject.FindFileGuidByProjectPath(unityBridgeFrameworkPath);
+		//if (guidTAPKitUnityBridge != null && guidTAPKitUnityBridge != "")
+		//{
+		//	pbxProject.AddFileToEmbedFrameworks(targetGuid, guidTAPKitUnityBridge);
+		//}
+		//else
+		//{
+		//	Debug.LogError("Error adding TAPKitUnityBridge to embed frameworks");
+		//}
+
+
 
 		//string FrameworksPluginsPath = "Frameworks/TAP/iOS/";
 		/*
