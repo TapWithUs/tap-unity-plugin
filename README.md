@@ -183,6 +183,8 @@ imuGyro refers to the gyro sensitivity on the thumb's sensor. Range: 1 to 4.
 imuAccelerometer refers to the accelerometer sensitivity on the thumb's sensor. Range: 1 to 5.
 Use zero for default sensitivity value.
 
+[For more information about raw sensor mode click here](https://tapwithus.atlassian.net/wiki/spaces/TD/pages/792002574/Tap+Strap+Raw+Sensors+Mode)
+
 ## Vibrations/Haptic
 
 Send Haptic/Vibration to TAP devices.
