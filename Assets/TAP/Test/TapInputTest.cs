@@ -55,6 +55,7 @@ public class TapInputTest : MonoBehaviour
         Debug.Log("onTapConnected : " + identifier + ", " + name + ", FW: " + fw);
         Log("onTapConnected : " + identifier + ", " + name);
         this.connectedTapIdentifier = identifier;
+        tapInputManager.StartRawSensorMode(this.connectedTapIdentifier, 0, 0, 0);
     }
 
     void onTapDisconnected(string identifier)

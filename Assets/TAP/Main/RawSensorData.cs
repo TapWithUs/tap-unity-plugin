@@ -34,7 +34,7 @@ public class RawSensorData
     public static RawSensorData makeFromString(string str, string delimeter)
     {
         string[] components = str.Split(delimeter[0]);
-
+        
         if (components.Length < 2)
         {
             return null;
@@ -99,11 +99,13 @@ public class RawSensorData
 
             if (!double.TryParse(components[i], out x))
             {
+                
                 return null;
             }
             i++;
             if (i >= components.Length)
             {
+                
                 return null;
             }
             if (!double.TryParse(components[i], out y))
@@ -142,7 +144,7 @@ public class RawSensorData
             return this.points[index];
         } else
         {
-            return null;
+            return new Vector3(0,0,0);
         }
     }
 }

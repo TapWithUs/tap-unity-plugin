@@ -170,7 +170,7 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 
     private void onRawSensorDataReceived(String rsArg)
     {
-        if (OnRawSensorDataReceived != null)
+		if (OnRawSensorDataReceived != null)
         {
 			string[] argParts = rsArg.Split(ARGS_SEPERATOR);
             if (argParts.Length == 2)
@@ -178,7 +178,7 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 				RawSensorData data = RawSensorData.makeFromString(argParts[1], "^");
                 if (data != null)
                 {
-					OnRawSensorDataReceived(argParts[0], data);
+                    OnRawSensorDataReceived(argParts[0], data);
                 }
             }
 		}
