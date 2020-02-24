@@ -214,8 +214,12 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		TAPKit_vibrate(tapIdentifier, durationsString, delimeter);
     }
 
-
-	
+#warning to do
+    void SetDefaultControllerMode(bool applyToConnectedTaps);
+    void SetDefaultTextMode(bool applyToConnectedTaps);
+    void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps);
+    bool isAnyTapInAirGestureState();
+    bool isAnyTapSupportsAirGestures();
 }
 
 #endif

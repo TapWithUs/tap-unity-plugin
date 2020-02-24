@@ -249,6 +249,29 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 
 	}
 
+	public void SetDefaultControllerMode(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultControllerMode", applyToConnectedTaps);
+    }
+
+	public void SetDefaultTextMode(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultTextMode", applyToConnectedTaps);
+    }
+
+	public void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultControllerWithMouseHIDMode", applyToConnectedTaps);
+    }
+
+	public bool isAnyTapInAirGestureState() {
+		return tapUnityAdapter.Call<bool>("isAnyTapInAirGestureState");
+    }
+        
+	public bool isAnyTapSupportsAirGestures()
+    {
+		return tapUnityAdapter.Call<bool>("isAnyTapSupportsAirGesture");
+	}
 
 }
 

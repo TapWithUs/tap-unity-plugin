@@ -63,8 +63,32 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
 
     }
 
+    public void SetDefaultControllerMode(bool applyToConnectedTaps)
+    {
+
+    }
+
+    public void SetDefaultTextMode(bool applyToConnectedTaps)
+    {
+
+    }
+
+    public void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps)
+    {
+
+    }
+
+    public bool isAnyTapInAirGestureState()
+    {
+        return false;
+    }
+
+    public bool isAnyTapSupportsAirGestures()
+    {
+        return false;
+    }
 
 
-    
+
 
 }

@@ -14,7 +14,8 @@ public interface ITapInput
     event Action<string, TapAirGesture> OnAirGestureInputReceived;
     event Action<string, bool> OnTapChangedAirGestureState;
     event Action<string, RawSensorData> OnRawSensorDataReceived;
-    
+
+
     void EnableDebug();
     void DisableDebug();
     void StartControllerMode(string tapIdentifier);
@@ -22,7 +23,13 @@ public interface ITapInput
     void StartControllerWithMouseHIDMode(string tapIdentifier);
     void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity);
 
+    void SetDefaultControllerMode(bool applyToConnectedTaps);
+    void SetDefaultTextMode(bool applyToConnectedTaps);
+    void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps);
+
     void Vibrate(string tapIdentifier, int[] durations);
-    
+
+    bool isAnyTapInAirGestureState();
+    bool isAnyTapSupportsAirGestures();
 
 }

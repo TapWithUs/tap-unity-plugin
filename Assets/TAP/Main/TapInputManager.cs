@@ -8,7 +8,7 @@ using AOT;
 public class TapInputManager : Singleton<TapInputManager>, ITapInput {
 
     private ITapInput tapInput;
-
+    
 // suppress "is not used" warning
 #pragma warning disable 0067
 
@@ -136,16 +136,19 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
     public void StartControllerMode(string tapIdentifier)
     {
         tapInput.StartControllerMode(tapIdentifier);
+
     }
 
     public void StartTextMode(string tapIdentifier)
     {
         tapInput.StartTextMode(tapIdentifier);
+        
     }
 
     public void StartControllerWithMouseHIDMode(string tapIdentifier)
     {
         tapInput.StartControllerWithMouseHIDMode(tapIdentifier);
+        
     }
 
     public void StartRawSensorMode(string tapIdentifier, int deviceAccelerometerSensitivity, int imuGyroSensitivity, int imuAccelerometerSensitivity) 
@@ -153,8 +156,47 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         tapInput.StartRawSensorMode(tapIdentifier, deviceAccelerometerSensitivity, imuGyroSensitivity, imuAccelerometerSensitivity);
     }
 
+    public void SetDefaultControllerMode(bool applyToConnectedTaps)
+    {
+        tapInput.SetDefaultControllerMode(applyToConnectedTaps);
+    }
+
+    public void SetDefaultTextMode(bool applyToConnectedTaps)
+    {
+        tapInput.SetDefaultTextMode(applyToConnectedTaps);
+    }
+
+    public void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps)
+    {
+        tapInput.SetDefaultControllerWithMouseHIDMode(applyToConnectedTaps);
+    }
+
     public void Vibrate(string tapIdentifier, int[] durations)
     {
         tapInput.Vibrate(tapIdentifier, durations);
     }
+
+    public bool isAnyTapInAirGestureState()
+    {
+        return tapInput.isAnyTapInAirGestureState();
+    }
+
+    public bool isAnyTapSupportsAirGestures()
+    {
+        return tapInput.isAnyTapSupportsAirGestures();
+    }
+
+    //private void PerformTapAction(string tapIdentifier, Action<string> action)
+    //{
+    //    if (tapIdentifier.Equals(TapInputManager._ALL_TAPS_))
+    //    {
+    //        foreach (string identifier in this.taps)
+    //        {
+    //            action(identifier);
+    //        }
+    //    } else
+    //    {
+    //        action(tapIdentifier);
+    //    }
+    //}
 }
