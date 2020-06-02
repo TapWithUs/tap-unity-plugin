@@ -5,6 +5,10 @@
 TAP Plugin for Unity allows you to build a Unity app that can receive input from TAP devices,
 In a way that each tap is being interpreted as an array or fingers that are tapped, or a binary combination integer (explanation follows), Thus allowing the TAP device to act as a controller for your app!
 
+## Compatible with
+
+TAP Plugin for Unity is compatible with iOS, Android and Windows Standalone platforms.
+
 ## Integration
 
 This repository contains a ready-to-go test project. You can however download just the "Assets" folder and integrate it with yours.
