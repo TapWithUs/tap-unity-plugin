@@ -7,7 +7,9 @@ In a way that each tap is being interpreted as an array or fingers that are tapp
 
 ## Compatible with
 
-TAP Plugin for Unity is compatible with iOS, Android and Windows Standalone platforms.
+TAP Plugin for Unity is compatible with iOS and Android.
+### We're working on completing the project to support the Windows Standalone platform.
+
 
 ## Integration
 
@@ -34,12 +36,10 @@ event Action<string, RawSensorData> OnRawSensorDataReceived;
 ### OnBluetoothTurnedOn
 
 Called whenever bluetooth state is turned on. pretty straight-forward... 
-* Doesn't work on Windows Platform.
 
 ### OnBluetoothTurnedOff
 
 Called whenver bouetooth state is turned off... You can use this function to alert the user for example.
-* Doesn't work on Windows Platform.
 
 ### OnTapConnected(string identifier, string name. int fw)
 
