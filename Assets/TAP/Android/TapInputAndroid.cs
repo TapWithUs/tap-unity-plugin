@@ -133,6 +133,7 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 
 	private void onMouseInputReceived(string args)
 	{
+		Debug.Log("--------MOUSE INPUT RECEIVED");
 		if (OnMouseInputReceived != null) {
 			string[] argParts = args.Split (ARGS_SEPERATOR);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TapInputTest : MonoBehaviour 
+public class TapInputTest : MonoBehaviour
 {
 
     public Text LogText;
@@ -12,13 +12,11 @@ public class TapInputTest : MonoBehaviour
 
     private bool mouseHIDEnabled;
 
-    private string connectedTapIdentifier="";
+    private string connectedTapIdentifier = "";
 
-	void Start() 
+    void Start()
     {
-
         tapInputManager = TapInputManager.Instance;
-
         tapInputManager.OnTapInputReceived += onTapped;
         tapInputManager.OnTapConnected += onTapConnected;
         tapInputManager.OnTapDisconnected += onTapDisconnected;
@@ -26,32 +24,32 @@ public class TapInputTest : MonoBehaviour
         tapInputManager.OnAirGestureInputReceived += onAirGestureInputReceived;
         tapInputManager.OnTapChangedAirGestureState += onTapChangedState;
         tapInputManager.OnRawSensorDataReceived += onRawSensorDataReceived;
-        tapInputManager.EnableDebug ();
-        tapInputManager.SetDefaultControllerWithMouseHIDMode(true);
+        tapInputManager.EnableDebug();
+        tapInputManager.SetDefaultControllerMode(true);
         mouseHIDEnabled = false;
-        
-	}
-    
+    }
+
     private void Log(string text)
     {
-        if (LogText != null) {
+        if (LogText != null)
+        {
             LogText.text += string.Format("{0}\n", text);
         }
         Debug.Log(text);
     }
 
-	void onMoused(string identifier, int vx, int vy, bool isMouse) 
+    void onMoused(string identifier, int vx, int vy, bool isMouse)
     {
         Log("onMoused" + identifier + ", velocity = (" + vx + "," + vy + "), isMouse " + isMouse);
-	}
+    }
 
-	void onTapped(string identifier, int combination) 
+    void onTapped(string identifier, int combination)
     {
-				bool[] arr = TapCombination.toFingers (combination);
+        bool[] arr = TapCombination.toFingers(combination);
         Log("onTapped : " + identifier + ", " + combination);
-	}
+    }
 
-	void onTapConnected(string identifier, string name, int fw)
+    void onTapConnected(string identifier, string name, int fw)
     {
         Debug.Log("onTapConnected : " + identifier + ", " + name + ", FW: " + fw);
         Log("onTapConnected : " + identifier + ", " + name);
@@ -68,17 +66,17 @@ public class TapInputTest : MonoBehaviour
         }
     }
 
-    
+
     void onAirGestureInputReceived(string tapIdentifier, TapAirGesture gesture)
     {
-        
+
         Log("OnAirGestureInputReceived: " + tapIdentifier + ", " + gesture.ToString());
     }
 
     void onTapChangedState(string tapIdentifier, bool isAirGesture)
     {
         Log("onTapChangedState: " + tapIdentifier + ", " + isAirGesture.ToString());
-        
+
     }
 
     void onRawSensorDataReceived(string tapIdentifier, RawSensorData data)
@@ -90,7 +88,7 @@ public class TapInputTest : MonoBehaviour
             // Each point in array represents the accelerometer value of a finger (thumb, index, middle, ring, pinky).
             Vector3 thumb = data.GetPoint(RawSensorData.iDEV_THUMB);
 
-            if (thumb != null) 
+            if (thumb != null)
             {
                 // Do something with thumb.x, thumb.y, thumb.z
             }
