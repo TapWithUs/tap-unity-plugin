@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TAPTestScene.unity
+    guid: 7b0e9e4ed2b6241759bb123270ecc2bc
+  m_configObjects: {}
