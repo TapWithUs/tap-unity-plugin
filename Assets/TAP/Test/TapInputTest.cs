@@ -40,7 +40,7 @@ public class TapInputTest : MonoBehaviour
 
     void onMoused(string identifier, int vx, int vy, bool isMouse)
     {
-        Log("onMoused" + identifier + ", velocity = (" + vx + "," + vy + "), isMouse " + isMouse);
+     //   Log("onMoused" + identifier + ", velocity = (" + vx + "," + vy + "), isMouse " + isMouse);
     }
 
     void onTapped(string identifier, int combination)

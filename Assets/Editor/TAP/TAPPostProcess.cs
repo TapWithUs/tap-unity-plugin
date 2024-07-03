@@ -23,7 +23,8 @@ public class TAPPostProcess {
 		var projectPath = pathToBuiltProject + "/Unity-iPhone.xcodeproj/project.pbxproj";
 		PBXProject pbxProject = new PBXProject ();
 		pbxProject.ReadFromFile (projectPath);
-		string targetGuid = pbxProject.TargetGuidByName ("Unity-iPhone");
+		//string targetGuid = pbxProject.TargetGuidByName ("Unity-iPhone");
+		string targetGuid = pbxProject.GetUnityMainTargetGuid();
 		Debug.Log ("TAP PostProcessBuild pbxproject initialized");
 
 		pbxProject.SetBuildProperty(targetGuid, "ENABLE_BITCODE", "NO");

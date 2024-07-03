@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS && !UNITY_EDITOR
+﻿#if UNITY_IOS //&& !UNITY_EDITOR
 
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +61,33 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 
 	[DllImport("__Internal")]
 	private static extern void TAPKit_setRawSensorMode(string identifier, int devAccel, int imuGyro, int imuAccel);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultControllerMode(bool applyImmediate);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultTextMode(bool applyImmediate);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultControllerWithMouseHIDMode(bool applyImmediate);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setXRTappingState(string identifier);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setXRAirMouseState(string identifier);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setXRUserControlState(string identifier);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultXRAirMouseState(bool applyImmediate);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultXRTappingState(bool applyImmediate);
+
+	[DllImport("__Internal")]
+	private static extern void TAPKit_setDefaultXRUserControlState(bool applyImmediate);
 
 	[DllImport("__Internal")]
 	private static extern void TAPKit_vibrate(string identifier, string durationsString, string delimeter);
@@ -214,12 +241,67 @@ public class TapInputIOS : Singleton<TapInputIOS>, ITapInput {
 		TAPKit_vibrate(tapIdentifier, durationsString, delimeter);
     }
 
-#warning to do
-    void SetDefaultControllerMode(bool applyToConnectedTaps);
-    void SetDefaultTextMode(bool applyToConnectedTaps);
-    void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps);
-    bool isAnyTapInAirGestureState();
-    bool isAnyTapSupportsAirGestures();
+
+
+    public void SetDefaultControllerMode(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultControllerMode(applyToConnectedTaps);
+    }
+
+	public void SetDefaultTextMode(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultTextMode(applyToConnectedTaps);
+    }
+
+	public void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultControllerWithMouseHIDMode(applyToConnectedTaps);
+    }
+
+	public void startXRTappingState(string tapIdentifier)
+    {
+		TAPKit_setXRTappingState(tapIdentifier);
+        
+    }
+
+    public void startXRAirMouseState(string tapIdentifier)
+    {
+		TAPKit_setXRAirMouseState(tapIdentifier);
+        
+    }
+
+    public void startXRUserControlState(string tapIdentifier)
+    {
+		TAPKit_setXRUserControlState(tapIdentifier);
+        
+    }
+
+    public void setDefaultXRAirMouseState(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultXRAirMouseState(applyToConnectedTaps);
+        
+    }
+
+    public void setDefaultXRTappingState(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultXRTappingState(applyToConnectedTaps);
+        
+    }
+
+    public void setDefaultXRUserControlState(bool applyToConnectedTaps)
+    {
+		TAPKit_setDefaultXRUserControlState(applyToConnectedTaps);
+    }
+
+    bool ITapInput.isAnyTapInAirGestureState()
+    {
+        throw new NotImplementedException();
+    }
+
+    bool ITapInput.isAnyTapSupportsAirGestures()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 #endif

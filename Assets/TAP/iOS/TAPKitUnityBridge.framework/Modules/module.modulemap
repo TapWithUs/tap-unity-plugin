@@ -1,6 +1,6 @@
 framework module TAPKitUnityBridge {
   umbrella header "TAPKitUnityBridge.h"
-
   export *
+
   module * { export * }
 }

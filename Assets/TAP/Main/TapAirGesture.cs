@@ -13,5 +13,9 @@ public enum TapAirGesture
     OnefingerRight = 8,
     TwoFingersRight = 9,
     IndexToThumbTouch = 10,
-    MiddleToThumbTouch = 11
+    MiddleToThumbTouch = 11,
+
+    xrAirGestureNone = 100,
+    xrAirGestureThumbIndex = 101,
+    xrAirGestureThumbMiddle = 102
 }

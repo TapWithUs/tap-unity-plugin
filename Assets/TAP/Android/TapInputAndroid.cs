@@ -1,4 +1,4 @@
-﻿#if UNITY_ANDROID //&& !UNITY_EDITOR
+﻿#if UNITY_ANDROID && !UNITY_EDITOR
 
 using UnityEngine;
 using System;
@@ -274,6 +274,36 @@ public class TapInputAndroid : Singleton<TapInputAndroid>, ITapInput {
 		return tapUnityAdapter.Call<bool>("isAnyTapSupportsAirGesture");
 	}
 
+    public void startXRTappingState(string tapIdentifier)
+    {
+		tapUnityAdapter.Call("startXRTappingState", tapIdentifier);
+        
+    }
+
+    public void startXRAirMouseState(string tapIdentifier)
+    {
+		tapUnityAdapter.Call("startXRAirMouseState", tapIdentifier);
+    }
+
+    public void startXRUserControlState(string tapIdentifier)
+    {
+		tapUnityAdapter.Call("startXRUserControlState", tapIdentifier);
+    }
+
+    public void setDefaultXRAirMouseState(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultXRAirMouseState", applyToConnectedTaps);
+    }
+
+    public void setDefaultXRTappingState(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultXRTappingState", applyToConnectedTaps);
+    }
+
+    public void setDefaultXRUserControlState(bool applyToConnectedTaps)
+    {
+		tapUnityAdapter.Call("setDefaultXRUserControlState", applyToConnectedTaps);
+    }
 }
 
 #endif

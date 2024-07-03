@@ -88,7 +88,33 @@ public class TapInputEditor : Singleton<TapInputEditor>, ITapInput
         return false;
     }
 
+    public void startXRTappingState(string tapIdentifier)
+    {
+        
+    }
 
+    public void startXRAirMouseState(string tapIdentifier)
+    {
+        
+    }
 
+    public void startXRUserControlState(string tapIdentifier)
+    {
+        
+    }
 
+    public void setDefaultXRAirMouseState(bool applyToConnectedTaps)
+    {
+        
+    }
+
+    public void setDefaultXRTappingState(bool applyToConnectedTaps)
+    {
+        
+    }
+
+    public void setDefaultXRUserControlState(bool applyToConnectedTaps)
+    {
+
+    }
 }

@@ -4,17 +4,21 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>.DS_Store</key>
+		<data>
+		lP8aXPe7+iWvtLJUABjrFa6Rqlg=
+		</data>
 		<key>Frameworks/TAPKit.framework/Info.plist</key>
 		<data>
-		dsd7hv24rcTsDub2crrrT7K4rKw=
+		f5DqABHHAxdz6Tk8jG18x+q7vXg=
 		</data>
 		<key>Frameworks/TAPKit.framework/TAPKit</key>
 		<data>
-		01wuTpkO6NSEA9vS/JMPzBr1ibo=
+		WWHEenh60G8mtGVYiz4uV/nKgmw=
 		</data>
 		<key>Frameworks/TAPKit.framework/_CodeSignature/CodeResources</key>
 		<data>
-		Al80zmoKsYbeSy+LWMuFfk9mGIc=
+		Pu/PQcvB2sFO5Ue3DurKFlOCY4g=
 		</data>
 		<key>Headers/TAPKitUnityBridge.h</key>
 		<data>
@@ -22,11 +26,11 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		OgU/+tnXkRz55uf4ZZOO9hsF3tw=
+		lCdAGNeePiUgSHMLch0YSGTlTRc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		7mHmUmYlQdnDcY3xBIBYjfm9onA=
+		VipkdXAGAdt2gbjXHctlzxQ5nSI=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -35,21 +39,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tEYE+VdG29DkzP7M+PYf69piBNp3iFraWw0NcMH4PU8=
+			Iasj92mNMsz9WkBQrerWuNY6JkFojpKfpEL9YZrAEcQ=
 			</data>
 		</dict>
 		<key>Frameworks/TAPKit.framework/TAPKit</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			A9DbtUH0Nv1MJEMRmQ7ykJrNlojIzNhxaHMX9iVtDbk=
+			2nO5gLJfB0WjRLBvB8PjtUicxY7zC/bJ4dzA/V2iwsg=
 			</data>
 		</dict>
 		<key>Frameworks/TAPKit.framework/_CodeSignature/CodeResources</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DtbPNXeyGMYS8FMPSoxTDKb8+gMEX6PpWH+JXh1VFFs=
+			l5koMANLwxv5FFMF59gvtFm9uwVjrf5HGVpBTiZsI5c=
 			</data>
 		</dict>
 		<key>Headers/TAPKitUnityBridge.h</key>
@@ -63,7 +67,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8FMczQF6CzUySwGRV3o26IMpROB1JCmQaWXPwKTmVwM=
+			2puawfwvAkpmvGr6W+XQkQrsOxgicGA7nJejEGy/MLU=
 			</data>
 		</dict>
 	</dict>

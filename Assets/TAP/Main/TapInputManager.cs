@@ -186,6 +186,41 @@ public class TapInputManager : Singleton<TapInputManager>, ITapInput {
         return tapInput.isAnyTapSupportsAirGestures();
     }
 
+    public void startXRTappingState(string tapIdentifier)
+    {
+        tapInput.startXRTappingState(tapIdentifier);
+        
+    }
+
+    public void startXRAirMouseState(string tapIdentifier)
+    {
+        tapInput.startXRAirMouseState(tapIdentifier);
+    }
+
+    public void startXRUserControlState(string tapIdentifier)
+    {
+        tapInput.startXRUserControlState(tapIdentifier);
+        
+    }
+
+    public void setDefaultXRAirMouseState(bool applyToConnectedTaps)
+    {
+        tapInput.setDefaultXRAirMouseState(applyToConnectedTaps);
+        
+    }
+
+    public void setDefaultXRTappingState(bool applyToConnectedTaps)
+    {
+        tapInput.setDefaultXRTappingState(applyToConnectedTaps);
+        
+    }
+
+    public void setDefaultXRUserControlState(bool applyToConnectedTaps)
+    {
+        tapInput.setDefaultXRUserControlState(applyToConnectedTaps);
+        
+    }
+
     //private void PerformTapAction(string tapIdentifier, Action<string> action)
     //{
     //    if (tapIdentifier.Equals(TapInputManager._ALL_TAPS_))

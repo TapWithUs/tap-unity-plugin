@@ -27,6 +27,14 @@ public interface ITapInput
     void SetDefaultTextMode(bool applyToConnectedTaps);
     void SetDefaultControllerWithMouseHIDMode(bool applyToConnectedTaps);
 
+    void startXRTappingState(string tapIdentifier);
+    void startXRAirMouseState(string tapIdentifier);
+    void startXRUserControlState(string tapIdentifier);
+
+    void setDefaultXRAirMouseState(bool applyToConnectedTaps);
+    void setDefaultXRTappingState(bool applyToConnectedTaps);
+    void setDefaultXRUserControlState(bool applyToConnectedTaps);
+
     void Vibrate(string tapIdentifier, int[] durations);
 
     bool isAnyTapInAirGestureState();
