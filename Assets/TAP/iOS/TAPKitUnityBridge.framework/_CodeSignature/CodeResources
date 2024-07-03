@@ -6,7 +6,11 @@
 	<dict>
 		<key>.DS_Store</key>
 		<data>
-		lP8aXPe7+iWvtLJUABjrFa6Rqlg=
+		wc6WCkG9HKVaAyCbwbCyGE/OkuA=
+		</data>
+		<key>Frameworks/.DS_Store</key>
+		<data>
+		OAB0kVApgN8goDLJNcsm7qrqUs8=
 		</data>
 		<key>Frameworks/TAPKit.framework/Info.plist</key>
 		<data>
@@ -14,7 +18,7 @@
 		</data>
 		<key>Frameworks/TAPKit.framework/TAPKit</key>
 		<data>
-		WWHEenh60G8mtGVYiz4uV/nKgmw=
+		L1xikRdZUtws6VQb1oP4LkgxgS8=
 		</data>
 		<key>Frameworks/TAPKit.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -46,7 +50,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2nO5gLJfB0WjRLBvB8PjtUicxY7zC/bJ4dzA/V2iwsg=
+			QMfZWxuWmtiNOzMC+lDu0NX6k9QchkzrY2O3D7h77eY=
 			</data>
 		</dict>
 		<key>Frameworks/TAPKit.framework/_CodeSignature/CodeResources</key>

@@ -1,5 +1,9 @@
 # TAP Plugin For Unity
 
+## Updates
+
+July 2024 - Added **TAPXR Gestures** (See below).
+
 ## What Is This ?
 
 TAP Plugin for Unity allows you to build a Unity app that can receive input from TAP devices,
@@ -188,6 +192,74 @@ imuAccelerometer refers to the accelerometer sensitivity on the thumb's sensor. 
 Use zero for default sensitivity value.
 
 [For more information about raw sensor mode click here](https://tapwithus.atlassian.net/wiki/spaces/TD/pages/792002574/Tap+Strap+Raw+Sensors+Mode)
+
+# TAPXR Gestures (July 2024)
+
+Added support to read the hand state while in AirMouse mode, for the TapXR device.
+
+## TapAirGesture
+
+Added 3 states for the enum TapAirGesture:
+
+```c#
+public enum TapAirGesture
+{
+    .
+    .
+    .
+    xrAirGestureNone = 100,
+    xrAirGestureThumbIndex = 101,
+    xrAirGestureThumbMiddle = 102
+}
+```
+
+    xrAirGestureNone: The hand is in resting state.
+    xrAirGestureThumbIndex : the thumb is touching the index finger.
+    xrAirGestureThumbMiddle : the thumb is touching the middle finger. 
+
+These states will be sent continously multiple times per second.
+
+The best practice is the take the most common one out of the last 3 events received to allow margin for errors.
+
+This will allow you to combine these states and the mouse-move event into "Drag and Drop" Gesture for example.
+
+##TapXRState
+
+In addition to TAPInputMode, the new TAPXR has input states.
+
+You can force TAPXR to switch to input state as follows:
+
+AIRMOUSE - The TAPXR will operate in AIRMOUSE mode ONLY.
+TAPPING - The TAPXR will operate in TAPPING mode only.
+USERCONTROL - The user will freely switch states as wished.
+
+You can change the state of individual connected device or devices by calling one of these methods:
+
+```c#
+public void startXRTappingState(string tapIdentifier)
+public void startXRAirMouseState(string tapIdentifier)
+public void startXRUserControlState(string tapIdentifier)
+```
+
+or call on of these functions to set the default XR State:
+
+```c#
+public void setDefaultXRAirMouseState(bool applyToConnectedTaps)
+public void setDefaultXRTappingState(bool applyToConnectedTaps)
+public void setDefaultXRUserControlState(bool applyToConnectedTaps)
+```
+
+While calling one of setDefaultTAPXRState functions, it'll set the default state that will be applied to newly connected devices. 
+If you wish to apply this state to already-connected devices, call with "applyToConnectedTaps": true.
+
+Examples:
+
+```c#
+TapInputManager.Instance.setDefaultXRAirMouseState(true);
+TapInputManager.Instance.setDefaultXRTappingState(false);
+TapInputManager.Instance.startXRUserControlState("identifier");
+```
+
 
 ## Vibrations/Haptic
 
